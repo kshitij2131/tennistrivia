@@ -1,0 +1,18 @@
+.dark-theme {
+    background-color: #222;
+    color: #fff;
+}
+
+.era-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.era-button:hover {
+    background-color: #444;
+}
