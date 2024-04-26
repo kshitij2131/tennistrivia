@@ -1,12 +1,11 @@
 import dash
-from dash import dcc, html
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objs as go
 import base64
-import era1, era2, era3, news
 
-app = dash.Dash(__name__)
+dash.register_page(__name__, path='/', name="ERA 1")
 
 surfaces = ['Grass', 'Clay', 'Hard']
 tournaments = ['Australian_Open', 'French_Open', 'Wimbledon', 'US_Open']
@@ -24,6 +23,8 @@ player_options = [
     {'label': 'Ivan Lendl', 'value': 'Lendl'},
     {'label': 'John McEnroe', 'value': 'McEnroe'}
 ]
+
+#Loading the Data..
 
 def read_image(filename):
     with open(filename, 'rb') as f:
@@ -46,34 +47,26 @@ def read_head_to_head(player1, player2):
     head_to_head_data = pd.read_csv(filename, index_col='Surface')
     return head_to_head_data
 
-app.layout = html.Div([
+#frontend..
 
-    html.H1("Tennis Trivia", style={'textAlign': 'center'}),
+layout = html.Div([
 
-    # Navigation
-    html.Div([
-        html.Button('Era 1', id='era1-button', n_clicks=0, style={'margin-right': '10px'}),
-        html.Button('Era 2', id='era2-button', n_clicks=0, style={'margin-right': '10px'}),
-        html.Button('Era 3', id='era3-button', n_clicks=0, style={'margin-right': '10px'}),
-        html.Button('Recent News', id='news-button', n_clicks=0)
-    ], style={'margin-bottom': '20px'}),
+    html.H1("ERA 1", style={'textAlign': 'center'}),
 
-
-    # Display
-    html.Div(id='page-content-era1', children=[
+    html.Div(id='page-content', children=[
         html.Div([
 
             #surfaceRecords
             html.Div([
                 html.Div(id='player-selector', children=[
                     dcc.Dropdown(
-                        id='player-dropdown-surfaceRecords',
+                        id='player-dropdown-surfaceRecords-era1',
                         options=player_options,
                         value='Borg'
                     )
                 ], style={'width': '20%'}),
 
-                html.Div(id='surface-stats', style={'display': 'flex', 'flexDirection': 'row'})
+                html.Div(id='surface-stats-era1', style={'display': 'flex', 'flexDirection': 'row'})
             ], style={'width': '50%'}),
 
             #headToHead
@@ -81,7 +74,7 @@ app.layout = html.Div([
                 html.Div(id='player-selectors', children=[
                     html.Div(id='player1-selector', children=[
                         dcc.Dropdown(
-                            id='player1-dropdown',
+                            id='player1-dropdown-era1',
                             options=player_options,
                             value='Borg'
                         )
@@ -89,7 +82,7 @@ app.layout = html.Div([
 
                     html.Div(id='player2-selector', children=[
                         dcc.Dropdown(
-                            id='player2-dropdown',
+                            id='player2-dropdown-era1',
                             options=player_options,
                             value='Lendl'
                         )
@@ -98,12 +91,12 @@ app.layout = html.Div([
 
 
                 html.Div([
-                    html.Div(id='player1-image', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
-                    html.Div(id='player2-image', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
+                    html.Div(id='player1-image-era1', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
+                    html.Div(id='player2-image-era1', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
                 ], style={'display': 'flex', 'flex-direction': 'horizontal', 'justify-content': 'center'}),
 
 
-                html.Div(id='head-to-head-table', style={'justify-content': 'center', 'text-align': 'center'})
+                html.Div(id='head-to-head-table-era1', style={'justify-content': 'center', 'text-align': 'center'})
             ], style={'width': '50%', 'justify-content': 'center', 'align-items': 'center'})
         ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
 
@@ -113,13 +106,13 @@ app.layout = html.Div([
             html.Div([
                 html.Div(id='selectors', children=[
                     dcc.Dropdown(
-                        id='tournament-dropdown',
+                        id='tournament-dropdown-era1',
                         options=tournament_options,
                         value=tournaments,
                         multi=True
                     ),
                     dcc.Dropdown(
-                        id='player-dropdown-grandSlams',
+                        id='player-dropdown-grandSlams-era1',
                         options=player_options,
                         value=players,
                         multi=True
@@ -127,14 +120,10 @@ app.layout = html.Div([
                 ]),
             ], style={'width': '40%'}),
 
-            html.Div(id='line-chart', style={'width': '50%', 'height': '50%'})
+            html.Div(id='line-chart-era1', style={'width': '50%', 'height': '50%'})
         
 
-        ]),
-
-        html.Div(id='page-content-era2'),
-        html.Div(id='page-content-era3'),
-        html.Div(id='page-content-news')
+        ])
 
         
 
@@ -142,46 +131,27 @@ app.layout = html.Div([
 ])
 
 
-#era2
-@app.callback(
-    Output('page-content-era2', 'children'),
-    Input('era2-button', 'n_clicks')
+
+
+
+# Callbacks..
+
+@callback(
+    Output('surface-stats-era1', 'children'),
+    Output('line-chart-era1', 'children'),
+    Output('head-to-head-table-era1', 'children'),
+    Output('player1-image-era1', 'children'),
+    Output('player2-image-era1', 'children'),
+    [Input('player-dropdown-surfaceRecords-era1', 'value'),
+     Input('player-dropdown-grandSlams-era1', 'value'),
+     Input('tournament-dropdown-era1', 'value'),
+     Input('player1-dropdown-era1', 'value'),
+     Input('player2-dropdown-era1', 'value')]
 )
-def display_era2_layout(n_clicks):
-    return era2.app.layout if n_clicks > 0 else dash.no_update
-
-#era3
-@app.callback(
-    Output('page-content-era3', 'children'),
-    Input('era3-button', 'n_clicks')
-)
-def display_era3_layout(n_clicks):
-    return era3.app.layout if n_clicks > 0 else dash.no_update
-
-#news
-@app.callback(
-    Output('page-content-news', 'children'),
-    Input('news-button', 'n_clicks')
-)
-def display_news_layout(n_clicks):
-    return news.app.layout if n_clicks > 0 else dash.no_update
 
 
+#Backend..
 
-# Backend..
-
-@app.callback(
-    Output('surface-stats', 'children'),
-    Output('line-chart', 'children'),
-    Output('head-to-head-table', 'children'),
-    Output('player1-image', 'children'),
-    Output('player2-image', 'children'),
-    [Input('player-dropdown-surfaceRecords', 'value'),
-     Input('player-dropdown-grandSlams', 'value'),
-     Input('tournament-dropdown', 'value'),
-     Input('player1-dropdown', 'value'),
-     Input('player2-dropdown', 'value')]
-)
 def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2):
     surface_stats = update_surface_stats(selected_player_sr)
     line_chart = update_line_chart(selected_players_gs, selected_tournaments)
@@ -238,7 +208,7 @@ def update_line_chart(selected_players, selected_tournaments):
     )
 
     line_chart = dcc.Graph(
-        id='line-chart-graph',
+        id='line-chart-era1-graph',
         figure={'data': data, 'layout': layout}
     )
 
@@ -271,7 +241,7 @@ def update_head_to_head_table(player1, player2):
     for attribute, values in head_to_head_data.iterrows():
         table_content.append(html.Tr([html.Td(values[player1], style=cell_style), html.Td(attribute, style=cell_style), html.Td(values[player2], style=cell_style)]))
 
-    head_to_head_table = html.Table(table_content, style=table_style, className='head-to-head-table')
+    head_to_head_table = html.Table(table_content, style=table_style, className='head-to-head-table-era1')
 
     return head_to_head_table
 
@@ -282,6 +252,3 @@ def update_player_images(player1, player2):
         return player1_image, player2_image
     else:
         return None, None
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
