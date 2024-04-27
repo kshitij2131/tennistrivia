@@ -52,7 +52,7 @@ def read_head_to_head(player1, player2):
 
 layout = html.Div([
 
-    html.H1("RECENT NEWS", style={'textAlign': 'center'}),
+    html.H1("RECENT NEWS", className="era-h1",style={'textAlign': 'center'}),
 
     html.Div(id='page-content-news', children=[
         html.Div([
@@ -127,7 +127,7 @@ layout = html.Div([
         
 
 
-    ], className='dark-theme')
+    ], )
 ])
 
 
@@ -223,7 +223,8 @@ def update_head_to_head_table(player1, player2):
         'border-collapse': 'collapse',
         'margin': 'auto',
         'text-align': 'center',
-        'font-size': '16px'
+        'font-size': '16px',
+        'font-family':'"Monaco", "Courier New", monospace;'
     }
     header_style = {
         'background-color': '#f2f2f2',

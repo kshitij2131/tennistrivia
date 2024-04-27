@@ -51,7 +51,7 @@ def read_head_to_head(player1, player2):
 
 layout = html.Div([
 
-    html.H1("ERA 3", style={'textAlign': 'center'}),
+    html.H1("ERA 3", className="era-h1",style={'textAlign': 'center'}),
 
     html.Div(id='page-content', children=[
         html.Div([
@@ -127,7 +127,7 @@ layout = html.Div([
 
         
 
-    ], className='dark-theme')
+    ], )
 ])
 
 

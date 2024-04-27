@@ -51,18 +51,19 @@ def read_head_to_head(player1, player2):
 
 layout = html.Div([
 
-    html.H1("ERA 1", style={'textAlign': 'center'}),
+    html.H1("ERA 1", className="era-h1",style={'textAlign': 'center'}),
 
     html.Div(id='page-content', children=[
         html.Div([
 
             #surfaceRecords
             html.Div([
-                html.Div(id='player-selector', children=[
+                html.Div(id='player-selector', className = "dropdown", children=[
                     dcc.Dropdown(
                         id='player-dropdown-surfaceRecords-era1',
                         options=player_options,
-                        value='Borg'
+                        value='Borg',
+                        clearable=False,
                     )
                 ], style={'width': '20%'}),
 
@@ -71,12 +72,13 @@ layout = html.Div([
 
             #headToHead
             html.Div([
-                html.Div(id='player-selectors', children=[
+                html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
                         dcc.Dropdown(
                             id='player1-dropdown-era1',
                             options=player_options,
-                            value='Borg'
+                            value='Borg',
+                            clearable=False,
                         )
                     ], style={'width': '20%', 'padding-right': '20px'}),
 
@@ -84,7 +86,8 @@ layout = html.Div([
                         dcc.Dropdown(
                             id='player2-dropdown-era1',
                             options=player_options,
-                            value='Lendl'
+                            value='Lendl',
+                            clearable=False,
                         )
                     ], style={'width': '20%', 'padding-left': '20px'}),
                 ], style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'center'}),
@@ -104,18 +107,20 @@ layout = html.Div([
         # grandSlams
         html.Div([  
             html.Div([
-                html.Div(id='selectors', children=[
+                html.Div(id='selectors', className = "dropdown" ,children=[
                     dcc.Dropdown(
                         id='tournament-dropdown-era1',
                         options=tournament_options,
                         value=tournaments,
-                        multi=True
+                        multi=True,
+                        clearable=False,
                     ),
                     dcc.Dropdown(
                         id='player-dropdown-grandSlams-era1',
                         options=player_options,
                         value=players,
-                        multi=True
+                        multi=True,
+                        clearable=False,
                     )
                 ]),
             ], style={'width': '40%'}),
@@ -127,7 +132,7 @@ layout = html.Div([
 
         
 
-    ], className='dark-theme')
+    ], )
 ])
 
 
@@ -178,7 +183,14 @@ def update_surface_stats(selected_player):
             name=surface,
             showlegend=False
         ))
-        surface_donut.update_layout(title_text=surface, title_x=0.5, title_y=0.5, margin=dict(t=0, b=0, l=40, r=40), height=300, width=250)
+        surface_donut.update_layout(
+            title_text=surface, 
+            title_x=0.5, 
+            title_y=0.5, 
+            margin=dict(t=0, b=0, l=40, r=40), 
+            height=300, 
+            width=250,
+            )
         surface_donuts.append(html.Div(dcc.Graph(figure=surface_donut), style={'width': '33%'}))
 
     return surface_donuts
@@ -224,7 +236,8 @@ def update_head_to_head_table(player1, player2):
         'border-collapse': 'collapse',
         'margin': 'auto',
         'text-align': 'center',
-        'font-size': '16px'
+        'font-size': 'large',
+        'color': 'black'
     }
     header_style = {
         'background-color': '#f2f2f2',
@@ -241,7 +254,7 @@ def update_head_to_head_table(player1, player2):
     for attribute, values in head_to_head_data.iterrows():
         table_content.append(html.Tr([html.Td(values[player1], style=cell_style), html.Td(attribute, style=cell_style), html.Td(values[player2], style=cell_style)]))
 
-    head_to_head_table = html.Table(table_content, style=table_style, className='head-to-head-table-era1')
+    head_to_head_table = html.Table(table_content, style=table_style, className='head-to-head-table')
 
     return head_to_head_table
 

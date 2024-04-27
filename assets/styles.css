@@ -1,0 +1,53 @@
+.dark-theme {
+    background-color: #222;
+    color: #fff;
+}
+
+.era-button {
+    justify-content: center;
+    display: flex;
+    width: 25%;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: "Monaco", "Courier New", monospace;
+    font-size:x-large;
+}
+
+.era-button:hover {
+    background-color: #c9c9c9;
+    
+}
+
+
+
+.main-heading{
+    font-family: "Monaco", "Courier New", monospace;
+}
+
+
+.era-h1{
+    font-family: "Monaco", "Courier New", monospace;
+}
+
+.dropdown{
+    border-radius: 4px; /* Add border radius */
+    font-size: 16px; /* Set font size */
+    color: #333; /* Set text color */   
+    background-color: #fff; /* Set background color */
+    outline: none; /* Remove outline */
+    font-family: "Monaco", "Courier New", monospace;
+    font-size: large;
+}
+
+.head-to-head-table{
+    font-size: large;
+    font-family: "Monaco", "Courier New", monospace;
+
+}
+
+
