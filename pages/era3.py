@@ -58,7 +58,7 @@ layout = html.Div([
 
             #surfaceRecords
             html.Div([
-                html.Div(id='player-selector', children=[
+                html.Div(id='player-selector',  className = "dropdown", children=[
                     dcc.Dropdown(
                         id='player-dropdown-surfaceRecords-era3',
                         options=player_options,
@@ -104,7 +104,7 @@ layout = html.Div([
         # grandSlams
         html.Div([  
             html.Div([
-                html.Div(id='selectors', children=[
+                html.Div(id='selectors',  className = "dropdown", children=[
                     dcc.Dropdown(
                         id='tournament-dropdown-era3',
                         options=tournament_options,

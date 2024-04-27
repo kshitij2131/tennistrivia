@@ -105,7 +105,7 @@ layout = html.Div([
         # grandSlams
         html.Div([  
             html.Div([
-                html.Div(id='selectors', children=[
+                html.Div(id='selectors', className = "dropdown", children=[
                     dcc.Dropdown(
                         id='tournament-dropdown-era2',
                         options=tournament_options,
