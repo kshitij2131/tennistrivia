@@ -78,7 +78,7 @@ layout = html.Div([
 
             #headToHead
             html.Div([
-                html.H3("Head to Head", className="era-h3", style={'textAlign': 'center'}),
+                html.H3("Head to Head Comparison", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
                         dcc.Dropdown(
@@ -102,6 +102,7 @@ layout = html.Div([
 
                 html.Div([
                     html.Div(id='player1-image-era1', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
+                    html.P("vs", style={'justify-content': 'center', 'align-items': 'center', 'display': 'flex', 'flex-direction': 'row', 'font-family': '"Monaco", "Courier New", monospace', 'font-weight': 'bold'}),
                     html.Div(id='player2-image-era1', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
                 ], style={'display': 'flex', 'flex-direction': 'horizontal', 'justify-content': 'center'}),
 
@@ -134,9 +135,9 @@ layout = html.Div([
 
         # grandSlams
         html.Div([  
-            html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
+            
             html.Div([
-                html.H3("Grandslam Timeline", className="visualisation-title"),
+                html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='selectors', className = "dropdown" ,children=[
                     dcc.Dropdown(
                         id='tournament-dropdown-era1',

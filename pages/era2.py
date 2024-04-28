@@ -59,13 +59,8 @@ layout = html.Div([
 
             #surfaceRecords
             html.Div([
-<<<<<<< HEAD
                 html.H3("Surface Records", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selector', className = "dropdown", children=[
-=======
-                html.H3("Surface Records", className="visualisation-title"),
-                html.Div(id='player-selector', className = "dropdown",children=[
->>>>>>> 2426bd42623a736d0469bf53a42fe474c9990fb6
                     dcc.Dropdown(
                         id='player-dropdown-surfaceRecords-era2',
                         options=player_options,
@@ -79,15 +74,9 @@ layout = html.Div([
 
             #headToHead
             html.Div([
-<<<<<<< HEAD
-                html.H3("Head to Head", className="era-h3", style={'textAlign': 'center'}),
+                html.H3("Head to Head Comparison", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
-=======
-                html.H3("Head To Head Comparison", className="visualisation-title"),
-                html.Div(id='player-selectors', children=[
-                    html.Div(id='player1-selector', className = "dropdown", children=[
->>>>>>> 2426bd42623a736d0469bf53a42fe474c9990fb6
                         dcc.Dropdown(
                             id='player1-dropdown-era2',
                             options=player_options,
@@ -109,6 +98,7 @@ layout = html.Div([
 
                 html.Div([
                     html.Div(id='player1-image-era2', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
+                     html.P("vs", style={'justify-content': 'center', 'align-items': 'center', 'display': 'flex', 'flex-direction': 'row', 'font-family': '"Monaco", "Courier New", monospace', 'font-weight': 'bold'}),
                     html.Div(id='player2-image-era2', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
                 ], style={'display': 'flex', 'flex-direction': 'horizontal', 'justify-content': 'center'}),
 
@@ -136,17 +126,13 @@ layout = html.Div([
                 html.Div(id='bar-container-era2')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%','height': '400px', 'display': 'flex', 'flex-direction': 'row'}),
 
 
         # grandSlams
         html.Div([  
-<<<<<<< HEAD
-            html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
-=======
-            html.H3("Grandslam Timeline", className="visualisation-title"),
->>>>>>> 2426bd42623a736d0469bf53a42fe474c9990fb6
             html.Div([
+                html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='selectors', className = "dropdown" ,children=[
                     dcc.Dropdown(
                         id='tournament-dropdown-era2',
@@ -325,6 +311,7 @@ def update_serve_bar(selected_stat):
             ),  
         plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
+        height=400,
     )
 
     return html.Div(dcc.Graph(figure=fig))
