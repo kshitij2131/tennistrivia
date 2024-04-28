@@ -63,7 +63,7 @@ def read_titles():
 
 layout = html.Div([
 
-    html.H1("ERA 1", className="era-h1", style={'textAlign': 'center'}),
+    html.H1("ERA 1 (1974-1990)", className="era-h1", style={'textAlign': 'center'}),
 
     html.Div(id='page-content', children=[
         html.Div([
@@ -137,7 +137,7 @@ layout = html.Div([
                 html.Div(id='bar-container-era1')
             ], style = {'width':'33%', 'height':'400px'}),
 
-        ], style={'width': '100%','display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%','height':'400px','display': 'flex', 'flex-direction': 'row'}),
 
 
         html.Div([
@@ -171,9 +171,9 @@ layout = html.Div([
             html.Div([
                 html.H3("Titles Won", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='titles-graph-container')
-            ], style = {'width': '50%', 'margin-top':'90px'}),
+            ], style = {'width': '50%', 'margin-top':'100px', 'height':'400px'}),
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
+        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row', 'height':'400px'})
 
         
 
@@ -271,7 +271,7 @@ def update_line_chart(selected_players, selected_tournaments):
         yaxis=dict(title='Total Tournaments Won'),
         hovermode='closest',
         legend=dict(orientation='h'),
-        height=350
+        height=400
     )
 
     line_chart = dcc.Graph(
@@ -316,8 +316,8 @@ def update_head_to_head_table(player1, player2):
 
 def update_player_images(player1, player2):
     if player1 and player2:
-        player1_image = html.Img(src=read_image(f"data/era1/pictures/{player1}.png"), style={'width': '100px', 'height': '100px'})
-        player2_image = html.Img(src=read_image(f"data/era1/pictures/{player2}.png"), style={'width': '100px', 'height': '100px'})
+        player1_image = html.Img(src=read_image(f"data/era1/pictures/{player1}.png"), style={'width': '150px', 'height': '150px'})
+        player2_image = html.Img(src=read_image(f"data/era1/pictures/{player2}.png"), style={'width': '150px', 'height': '150px'})
         return player1_image, player2_image
     else:
         return None, None
@@ -369,11 +369,11 @@ def update_num_titles():
         plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
         height = 350,
-        margin=dict(l=0, r=0, t=0, b=0)
+        margin=dict(l=0, r=0, t=50, b=0)
     )
 
     fig = go.Figure(data=data, layout=layout)
-    graph = html.Div(dcc.Graph(figure=fig))
+    graph = html.Div(dcc.Graph(figure=fig), )
 
     return graph
 

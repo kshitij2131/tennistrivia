@@ -67,16 +67,16 @@ def update_news_articles(date_range):
             image_url = article.get('image', '')
             article_url = article['url']
             article_html = html.Div([
-                html.H3(title, className="era-h1"),
-                html.P([html.B(f"Source: {source_name} | Published At: {published_at}")], className='news-p'),
+                html.H3(title, className="era-h1", style = {'font-size': 'x-large'}),
+                html.P([html.B(f"Source: {source_name} | Published At: {published_at}")], className='news-p', style = {'font-size': 'medium'}),
                 html.Div(id='news-content',children =[
                     html.Img(src=image_url, className="news-image", style={'width': '50%', 'height': '300px', 'padding-right': '10px'}),
                     html.Div(id='news-text', children=[
-                        html.P(html.B(description), className="news-p", style = {'width': '50%'}),
-                        html.P(content, className="news-p", style = {'width': '50%'})
+                        html.P(html.B(description), className="news-p", style = {'width': '50%', 'font-size': 'large'}),
+                        html.P(content, className="news-p", style = {'width': '50%', 'font-size': 'large'})
                     ])
-                ], style = {'width': '70%', 'display': 'flex', 'flex-direction': 'row'}),
-                html.A("Read more", href=article_url, target="_blank", className='news-button'),
+                ], style = {'width': '70%', 'display': 'flex', 'flex-direction': 'row', 'font-size': 'x-large'}),
+                html.A("Read more", href=article_url, target="_blank", className='news-button', style = {'font-size': 'medium'}),
                 html.Hr()
             ]) 
             news_list.append(article_html)

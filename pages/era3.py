@@ -63,7 +63,7 @@ def read_rankings():
 
 layout = html.Div([
 
-    html.H1("ERA 3", className="era-h1", style={'textAlign': 'center'}),
+    html.H1("ERA 3 (1985-2003)", className="era-h1", style={'textAlign': 'center'}),
 
     html.Div(id='page-content', children=[
         html.Div([
@@ -109,6 +109,7 @@ layout = html.Div([
 
                 html.Div([
                     html.Div(id='player1-image-era3', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
+                     html.P("vs", style={'justify-content': 'center', 'align-items': 'center', 'display': 'flex', 'flex-direction': 'row', 'font-family': '"Monaco", "Courier New", monospace', 'font-weight': 'bold'}),
                     html.Div(id='player2-image-era3', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
                 ], style={'display': 'flex', 'flex-direction': 'horizontal', 'justify-content': 'center'}),
 
@@ -170,6 +171,17 @@ layout = html.Div([
             # Player Rankings
             html.Div([
                 html.H3("Player Rankings Over the Years", className="era-h3", style={'textAlign': 'center'}),
+                html.Div([
+                    html.Div(id='selectors-for-rankings', className = "dropdown" ,children=[
+                        dcc.Dropdown(
+                            id='rankings-dropdown',
+                            options=player_options,
+                            value=players,
+                            multi=True,
+                            clearable=False,
+                        )
+                    ]),
+                ], style={'width': '70%'}),
                 html.Div(id='rankings-graph-container'),
                 html.Div(id = 'year-selector' , children=[
                     dcc.RangeSlider(
@@ -208,6 +220,7 @@ layout = html.Div([
      Input('player1-dropdown-era3', 'value'),
      Input('player2-dropdown-era3', 'value'),
      Input('stat-dropdown-era3', 'value'),
+     Input('rankings-dropdown', 'value'),
      Input('year-slider-era3', 'value')]
 )
 
@@ -215,13 +228,13 @@ layout = html.Div([
 
 #Backend..
 
-def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2, stat_dropdown, selected_years):
+def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2, stat_dropdown, ranking_players, selected_years):
     surface_stats = update_surface_stats(selected_player_sr)
     line_chart = update_line_chart(selected_players_gs, selected_tournaments)
     h2h_table = update_head_to_head_table(player1, player2)
     player1_img, player2_img = update_player_images(player1, player2)
     serve_bar = update_serve_bar(stat_dropdown)
-    ranking_line_chart = update_rankings_graph(selected_years)
+    ranking_line_chart = update_rankings_graph(ranking_players ,selected_years)
 
     return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar, ranking_line_chart
 
@@ -317,8 +330,8 @@ def update_head_to_head_table(player1, player2):
 
 def update_player_images(player1, player2):
     if player1 and player2:
-        player1_image = html.Img(src=read_image(f"data/era3/pictures/{player1}.png"), style={'width': '100px', 'height': '100px'})
-        player2_image = html.Img(src=read_image(f"data/era3/pictures/{player2}.png"), style={'width': '100px', 'height': '100px'})
+        player1_image = html.Img(src=read_image(f"data/era3/pictures/{player1}.png"), style={'width': '150px', 'height': '150px'})
+        player2_image = html.Img(src=read_image(f"data/era3/pictures/{player2}.png"), style={'width': '150px', 'height': '150px'})
         return player1_image, player2_image
     else:
         return None, None
@@ -349,12 +362,12 @@ def update_serve_bar(selected_stat):
     return html.Div(dcc.Graph(figure=fig))
 
 
-def update_rankings_graph(selected_years):
+def update_rankings_graph(selected_players, selected_years):
     rankings_df = read_rankings()
     selected_years_data = rankings_df[(rankings_df['Year'] >= selected_years[0]) & (rankings_df['Year'] <= selected_years[1])]
 
     data = []
-    for player in players:
+    for player in selected_players:  # Iterate only over selected players
         data.append(go.Scatter(
             x=selected_years_data['Year'],
             y=selected_years_data[player],
@@ -363,16 +376,15 @@ def update_rankings_graph(selected_years):
         ))
 
     layout = go.Layout(
-
         font=dict(
             size=16,
-            family = '"Monaco", "Courier New", monospace'
-        ),  
+            family='"Monaco", "Courier New", monospace'
+        ),
         xaxis=dict(title='Year'),
-        yaxis=dict(title='Ranking Position', autorange='reversed', zeroline = False),
+        yaxis=dict(title='Ranking Position (logscale)', autorange='reversed', type='log', zeroline=False),
         hovermode='closest',
         legend=dict(orientation='h'),
-        height=350,
+        height=330,
         margin=dict(l=0, r=0, t=30, b=0)
     )
 
@@ -382,3 +394,4 @@ def update_rankings_graph(selected_years):
     )
 
     return html.Div(graph)
+
