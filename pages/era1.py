@@ -135,7 +135,7 @@ layout = html.Div([
                 
                 html.Br(),
                 html.Div(id='bar-container-era1')
-            ], style = {'width':'33%'}),
+            ], style = {'width':'33%', 'height':'400px'}),
 
         ], style={'width': '100%','display': 'flex', 'flex-direction': 'row'}),
 
@@ -162,7 +162,7 @@ layout = html.Div([
                             clearable=False,
                         )
                     ]),
-                ], style={'width': '40%'}),
+                ], style={'width': '70%'}),
 
                 html.Div(id='line-chart-era1')
             ], style = {'width': '50%'}),
@@ -171,7 +171,7 @@ layout = html.Div([
             html.Div([
                 html.H3("Titles Won", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='titles-graph-container')
-            ], style = {'width': '50%'}),
+            ], style = {'width': '50%', 'margin-top':'90px'}),
 
         ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
 
@@ -270,7 +270,8 @@ def update_line_chart(selected_players, selected_tournaments):
         xaxis=dict(title='Year'),
         yaxis=dict(title='Total Tournaments Won'),
         hovermode='closest',
-        legend=dict(orientation='h')
+        legend=dict(orientation='h'),
+        height=350
     )
 
     line_chart = dcc.Graph(
@@ -353,7 +354,7 @@ def update_num_titles():
     data = [go.Bar(
         x=titles_df['Player'],
         y=titles_df['Number of Titles'],
-        marker=dict(color='#eb3434')
+        marker=dict(color='#3b46f7')
     )]
 
     layout = go.Layout(
@@ -367,7 +368,8 @@ def update_num_titles():
         barmode='group',  
         plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
-        height = 400,
+        height = 350,
+        margin=dict(l=0, r=0, t=0, b=0)
     )
 
     fig = go.Figure(data=data, layout=layout)

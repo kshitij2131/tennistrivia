@@ -130,13 +130,13 @@ layout = html.Div([
                         value='Aces',
                         clearable=False,
                     ),
-                ], style = {'width':'40%'}),
+                ], style = {'width':'40%', 'margin':'0'}),
                 
                 html.Br(),
                 html.Div(id='bar-container-era3')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%', 'height':'400px', 'display': 'flex', 'flex-direction': 'row'}),
 
 
         
@@ -162,7 +162,7 @@ layout = html.Div([
                             clearable=False,
                         )
                     ]),
-                ], style={'width': '40%'}),
+                ], style={'width': '70%'}),
 
                 html.Div(id='line-chart-era3')
             ], style = {'width': '50%'}),
@@ -170,6 +170,7 @@ layout = html.Div([
             # Player Rankings
             html.Div([
                 html.H3("Player Rankings Over the Years", className="era-h3", style={'textAlign': 'center'}),
+                html.Div(id='rankings-graph-container'),
                 html.Div(id = 'year-selector' , children=[
                     dcc.RangeSlider(
                         id='year-slider-era3',
@@ -180,11 +181,9 @@ layout = html.Div([
                         marks={year: str(year) for year in range(frm, to+1)}
                     )
                 ], style = {'width':'100%'}),
-                
-                html.Div(id='rankings-graph-container')
-            ], style = {'width': '50%'}),
+            ], style = {'width': '50%', 'height':'400px', 'margin-top':'100px'}),
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
+        ], style={'width': '100%', 'height':'400px','display': 'flex', 'flex-direction': 'row'})
         
 
     
@@ -364,7 +363,7 @@ def update_rankings_graph(selected_years):
         ))
 
     layout = go.Layout(
-        title="Player Rankings Over the Years",
+
         font=dict(
             size=16,
             family = '"Monaco", "Courier New", monospace'
@@ -372,7 +371,9 @@ def update_rankings_graph(selected_years):
         xaxis=dict(title='Year'),
         yaxis=dict(title='Ranking Position', autorange='reversed', zeroline = False),
         hovermode='closest',
-        legend=dict(orientation='h')
+        legend=dict(orientation='h'),
+        height=350,
+        margin=dict(l=0, r=0, t=30, b=0)
     )
 
     graph = dcc.Graph(
