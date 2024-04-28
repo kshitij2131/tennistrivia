@@ -152,7 +152,7 @@ layout = html.Div([
                         multi=True,
                         clearable=False,
                     )
-                ]),
+                ], style = {'width':'70%'}),
             ], style={'width': '40%'}),
 
             html.Div(id='line-chart-era3', style={'width': '50%', 'height': '50%'})
