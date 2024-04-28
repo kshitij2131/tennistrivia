@@ -14,6 +14,34 @@ players = ['Agassi', 'Becker', 'Edberg', 'Sampras']
 frm = 1985
 to = 2003
 
+player_full_names = {
+    'Edberg': 'Stefan Edberg',
+    'Wilander': 'Mats Wilander',
+    'Becker': 'Boris Becker',
+    'Lendl': 'Ivan Lendl',
+    'Cash': 'Pat Cash',
+    'Gomez': 'Andres Gomez',
+    'Sampras': 'Pete Sampras',
+    'Chang': 'Michael Chang',
+    'Courier': 'Jim Courier',
+    'Stich': 'Michael Stich',
+    'Agassi': 'Andre Agassi',
+    'Bruguera': 'Sergi Bruguera',
+    'Muster': 'Thomas Muster',
+    'Kafelnikov': 'Yevgeny Kafelnikov',
+    'Kuerten': 'Gustavo Kuerten',
+    'Rafter': 'Patrick Rafter',
+    'Korda': 'Petr Korda',
+    'Moya': 'Carlos Moya',
+    'Safin': 'Marat Safin',
+    'Ivanisevic': 'Goran Ivanisevic',
+    'Hewitt': 'Lleyton Hewitt',
+    'Johansson': 'Thomas Johansson',
+    'Costa': 'Albert Costa',
+    'Ferrero': 'Juan Carlos Ferrero',
+    'Roddick': 'Andy Roddick'
+}
+
 tournament_options = [
     {'label': 'Australian Open', 'value': 'Australian_Open'},
     {'label': 'French Open', 'value': 'French_Open'},
@@ -49,6 +77,16 @@ def read_head_to_head(player1, player2):
     filename = f"data/era2/headToHead/{p1}{p2}.csv"
     head_to_head_data = pd.read_csv(filename, index_col='Surface')
     return head_to_head_data
+
+def read_serve_stats():
+    filename = f"data/era2/serve/serveStats.csv"
+    serve_stats = pd.read_csv(filename)
+    return serve_stats
+
+def read_gs_wins():
+    filename = f"data/era2/yearwiseSlamWinners/yearwiseSlamWinners.csv"
+    serve_stats = pd.read_csv(filename)
+    return serve_stats
 
 #frontend..
 
@@ -160,17 +198,25 @@ layout = html.Div([
             # Grand Slam Winners Yearwise.. 
             html.Div([
                 html.H3("Grand Slam Winners", className="era-h3", style={'textAlign': 'center'}),
-            ], style = {'width': '50%'}),
+                html.Div(id='slam-winners-info'),
+                html.Div(id='gs-year-selector', children=[
+                    dcc.Slider(
+                        id='year-slider-era2',
+                        min=frm,
+                        max=to,
+                        value=frm,
+                        marks={year: str(year) for year in range(frm, to+1)},
+                        step=None
+                    )
+                ], style={'width': '100%'})
+            ], style={'width': '50%'})
 
         ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
 
     ], )
 ])
 
-def read_serve_stats():
-    filename = f"data/era2/serve/serveStats.csv"
-    serve_stats = pd.read_csv(filename)
-    return serve_stats
+
 
 
 #Callbacks..
@@ -182,24 +228,27 @@ def read_serve_stats():
     Output('player1-image-era2', 'children'),
     Output('player2-image-era2', 'children'),
     Output('bar-container-era2', 'children'),
+    Output('slam-winners-info', 'children'),
     [Input('player-dropdown-surfaceRecords-era2', 'value'),
      Input('player-dropdown-grandSlams-era2', 'value'),
      Input('tournament-dropdown-era2', 'value'),
      Input('player1-dropdown-era2', 'value'),
      Input('player2-dropdown-era2', 'value'),
-     Input('stat-dropdown-era2', 'value')]
+     Input('stat-dropdown-era2', 'value'),
+     Input('year-slider-era2', 'value')]
 )
 
 #Backend..
 
-def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2, stat_dropdown):
+def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2, stat_dropdown, selected_year):
     surface_stats = update_surface_stats(selected_player_sr)
     line_chart = update_line_chart(selected_players_gs, selected_tournaments)
     h2h_table = update_head_to_head_table(player1, player2)
     player1_img, player2_img = update_player_images(player1, player2)
     serve_bar = update_serve_bar(stat_dropdown)
+    gs_winners = update_winners_info(selected_year)
 
-    return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar
+    return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar, gs_winners
 
 def update_surface_stats(selected_player):
     player_data = read_surfaceRecords(selected_player)
@@ -322,3 +371,24 @@ def update_serve_bar(selected_stat):
     )
 
     return html.Div(dcc.Graph(figure=fig))
+
+def update_winners_info(selected_year):
+    slam_winners_df = read_gs_wins()
+    year_data = slam_winners_df[slam_winners_df['Year'] == selected_year]
+
+    winners_info = []
+
+    for _, row in year_data.iterrows():
+        tournament = row[['Australian Open', 'French Open', 'Wimbledon', 'US Open']]
+        grand_slams = ['Australian Open', 'Roland Garros', 'Wimbledon', 'US Open']
+        for winner, grand_slam in zip(tournament, grand_slams):
+            if winner and not pd.isna(winner):
+                winner_name = player_full_names.get(winner, winner)
+                winner_image = html.Img(src=read_image(f"data/era2/pictures/{winner}.png"), style={'width': '200px', 'height': '200px'})
+                winners_info.append(html.Div([html.H3(f"{grand_slam} Champion", 
+                                    style = {'font-family': '"Monaco", "Courier New", monospace'}), winner_image, winner_name]))
+            else:
+                winners_info.append(html.Div([html.H3(f"{grand_slam} Grand Slam did not happen😞")],
+                                            style = {'font-family': '"Monaco", "Courier New", monospace'}))
+
+    return html.Div(winners_info, style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
