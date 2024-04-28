@@ -56,13 +56,14 @@ def read_serve_stats():
 
 layout = html.Div([
 
-    html.H1("ERA 1", className="era-h1",style={'textAlign': 'center'}),
+    html.H1("ERA 1", className="era-h1", style={'textAlign': 'center'}),
 
     html.Div(id='page-content', children=[
         html.Div([
 
             #surfaceRecords
             html.Div([
+                html.H3("Surface Records", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selector', className = "dropdown", children=[
                     dcc.Dropdown(
                         id='player-dropdown-surfaceRecords-era1',
@@ -70,13 +71,14 @@ layout = html.Div([
                         value='Borg',
                         clearable=False,
                     )
-                ], style={'width': '20%'}),
+                ], style={'width': '40%'}),
 
                 html.Div(id='surface-stats-era1', style={'display': 'flex', 'flexDirection': 'row'})
             ], style={'width': '33%'}),
 
             #headToHead
             html.Div([
+                html.H3("Head to Head", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
                         dcc.Dropdown(
@@ -109,9 +111,10 @@ layout = html.Div([
 
             #serveStats
             html.Div([
+                html.H3("Serve Stats", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id = 'stat-selector', className='dropdown', children = [
                     dcc.Dropdown(
-                    id='stat-dropdown',
+                    id='stat-dropdown-era1',
                         options=[
                             {'label': 'Aces', 'value': 'Aces'},
                             {'label': 'Double Faults', 'value': 'Double Faults'},
@@ -123,7 +126,7 @@ layout = html.Div([
                 ], style = {'width':'40%'}),
                 
                 html.Br(),
-                html.Div(id='bar-container')
+                html.Div(id='bar-container-era1')
             ], style = {'width':'33%'}),
 
         ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
@@ -131,6 +134,7 @@ layout = html.Div([
 
         # grandSlams
         html.Div([  
+            html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
             html.Div([
                 html.Div(id='selectors', className = "dropdown" ,children=[
                     dcc.Dropdown(
@@ -172,13 +176,13 @@ layout = html.Div([
     Output('head-to-head-table-era1', 'children'),
     Output('player1-image-era1', 'children'),
     Output('player2-image-era1', 'children'),
-    Output('bar-container', 'children'),
+    Output('bar-container-era1', 'children'),
     [Input('player-dropdown-surfaceRecords-era1', 'value'),
      Input('player-dropdown-grandSlams-era1', 'value'),
      Input('tournament-dropdown-era1', 'value'),
      Input('player1-dropdown-era1', 'value'),
      Input('player2-dropdown-era1', 'value'),
-     Input('stat-dropdown', 'value')]
+     Input('stat-dropdown-era1', 'value')]
 )
 
 
@@ -189,7 +193,7 @@ def update(selected_player_sr, selected_players_gs, selected_tournaments, player
     line_chart = update_line_chart(selected_players_gs, selected_tournaments)
     h2h_table = update_head_to_head_table(player1, player2)
     player1_img, player2_img = update_player_images(player1, player2)
-    serve_bar = update_table(stat_dropdown)
+    serve_bar = update_serve_bar(stat_dropdown)
 
     return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar
 
@@ -241,6 +245,10 @@ def update_line_chart(selected_players, selected_tournaments):
 
     layout = go.Layout(
         title='Grand Slams Won by Players Over the Years',
+        font=dict(
+            size=16,
+            family = '"Monaco", "Courier New", monospace'
+        ),  
         xaxis=dict(title='Year'),
         yaxis=dict(title='Total Tournaments Won'),
         hovermode='closest',
@@ -256,7 +264,8 @@ def update_line_chart(selected_players, selected_tournaments):
 
 def update_head_to_head_table(player1, player2):
     if player1 == player2:
-        return html.Div("Please select different players.", style={'text-align': 'center', 'margin-top': '20px'})
+        return html.Div("Please select different players.", style={'text-align': 'center', 'margin-top': '20px', 
+                                                                   'font-family': '"Monaco", "Courier New", monospace'})
     head_to_head_data = read_head_to_head(player1, player2)
 
     table_style = {
@@ -294,7 +303,7 @@ def update_player_images(player1, player2):
     else:
         return None, None
 
-def update_table(selected_stat):
+def update_serve_bar(selected_stat):
     df = read_serve_stats()
     sorted_df = df.sort_values(by=selected_stat, ascending=True)
     fig = go.Figure()
@@ -311,8 +320,8 @@ def update_table(selected_stat):
         font=dict(
             size=16,
             family = '"Monaco", "Courier New", monospace'
-            ),  # Set font size
-        plot_bgcolor='#ffffff',  # Set transparent background
+            ),  
+        plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
     )
 

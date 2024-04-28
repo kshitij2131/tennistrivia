@@ -6,6 +6,8 @@ import requests
 
 
 dash.register_page(__name__, path='/news', name="RECENT NEWS")
+
+
 # api_key = "fad10f0941c470a19bf01b5f51419968"
 #In case the above api doesn't work, please use
 api_key = "87ae556dd203782a4fb6d957cd016698"

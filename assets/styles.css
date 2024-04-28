@@ -33,6 +33,10 @@
     font-family: "Monaco", "Courier New", monospace;
 }
 
+.era-h3{
+    font-family: "Monaco", "Courier New", monospace;
+    font-size: large;
+}
 
 .dropdown{
     border-radius: 4px; /* Add border radius */
