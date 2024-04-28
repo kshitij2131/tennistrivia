@@ -72,19 +72,21 @@ layout = html.Div([
             #headToHead
             html.Div([
                 html.Div(id='player-selectors', children=[
-                    html.Div(id='player1-selector', children=[
+                    html.Div(id='player1-selector', className = "dropdown", children=[
                         dcc.Dropdown(
                             id='player1-dropdown-era3',
                             options=player_options,
-                            value='Djokovic'
+                            value='Djokovic',
+                            clearable = False,
                         )
                     ], style={'width': '20%', 'padding-right': '20px'}),
 
-                    html.Div(id='player2-selector', children=[
+                    html.Div(id='player2-selector', className = "dropdown", children=[
                         dcc.Dropdown(
                             id='player2-dropdown-era3',
                             options=player_options,
-                            value='Nadal'
+                            value='Nadal',
+                            clearable = False,
                         )
                     ], style={'width': '20%', 'padding-left': '20px'}),
                 ], style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'center'}),

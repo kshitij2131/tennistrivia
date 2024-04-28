@@ -46,6 +46,11 @@ def read_head_to_head(player1, player2):
     filename = f"data/era1/headToHead/{p1}{p2}.csv"
     head_to_head_data = pd.read_csv(filename, index_col='Surface')
     return head_to_head_data
+    
+def read_serve_stats():
+    filename = f"data/era1/serve/serveStats.csv"
+    serve_stats = pd.read_csv(filename)
+    return serve_stats
 
 #frontend..
 
@@ -68,7 +73,7 @@ layout = html.Div([
                 ], style={'width': '20%'}),
 
                 html.Div(id='surface-stats-era1', style={'display': 'flex', 'flexDirection': 'row'})
-            ], style={'width': '50%'}),
+            ], style={'width': '33%'}),
 
             #headToHead
             html.Div([
@@ -100,7 +105,27 @@ layout = html.Div([
 
 
                 html.Div(id='head-to-head-table-era1', style={'justify-content': 'center', 'text-align': 'center'})
-            ], style={'width': '50%', 'justify-content': 'center', 'align-items': 'center'})
+            ], style={'width': '33%', 'justify-content': 'center', 'align-items': 'center'}),
+
+            #serveStats
+            html.Div([
+                html.Div(id = 'stat-selector', className='dropdown', children = [
+                    dcc.Dropdown(
+                    id='stat-dropdown',
+                        options=[
+                            {'label': 'Aces', 'value': 'Aces'},
+                            {'label': 'Double Faults', 'value': 'Double Faults'},
+                            {'label': 'First Serve Percentage', 'value': 'First Serve Percentage'}
+                        ],
+                        value='Aces',
+                        clearable=False,
+                    ),
+                ], style = {'width':'40%'}),
+                
+                html.Br(),
+                html.Div(id='bar-container')
+            ], style = {'width':'33%'}),
+
         ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
 
 
@@ -147,23 +172,26 @@ layout = html.Div([
     Output('head-to-head-table-era1', 'children'),
     Output('player1-image-era1', 'children'),
     Output('player2-image-era1', 'children'),
+    Output('bar-container', 'children'),
     [Input('player-dropdown-surfaceRecords-era1', 'value'),
      Input('player-dropdown-grandSlams-era1', 'value'),
      Input('tournament-dropdown-era1', 'value'),
      Input('player1-dropdown-era1', 'value'),
-     Input('player2-dropdown-era1', 'value')]
+     Input('player2-dropdown-era1', 'value'),
+     Input('stat-dropdown', 'value')]
 )
 
 
 #Backend..
 
-def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2):
+def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2, stat_dropdown):
     surface_stats = update_surface_stats(selected_player_sr)
     line_chart = update_line_chart(selected_players_gs, selected_tournaments)
     h2h_table = update_head_to_head_table(player1, player2)
     player1_img, player2_img = update_player_images(player1, player2)
+    serve_bar = update_table(stat_dropdown)
 
-    return surface_stats, line_chart, h2h_table, player1_img, player2_img
+    return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar
 
 def update_surface_stats(selected_player):
     player_data = read_surfaceRecords(selected_player)
@@ -265,3 +293,27 @@ def update_player_images(player1, player2):
         return player1_image, player2_image
     else:
         return None, None
+
+def update_table(selected_stat):
+    df = read_serve_stats()
+    sorted_df = df.sort_values(by=selected_stat, ascending=True)
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=sorted_df[selected_stat],
+        y=sorted_df['Player'],
+        orientation='h',
+        marker=dict(color='#eb3434')
+    ))
+    fig.update_layout(
+        title=f'{selected_stat} by Player',
+        xaxis_title=selected_stat,
+        yaxis_title='Player',
+        font=dict(
+            size=16,
+            family = '"Monaco", "Courier New", monospace'
+            ),  # Set font size
+        plot_bgcolor='#ffffff',  # Set transparent background
+        paper_bgcolor='#ffffff', 
+    )
+
+    return html.Div(dcc.Graph(figure=fig))
