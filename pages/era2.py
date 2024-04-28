@@ -11,6 +11,8 @@ dash.register_page(__name__, path='/era2', name="ERA 2")
 surfaces = ['Grass', 'Clay', 'Hard']
 tournaments = ['Australian_Open', 'French_Open', 'Wimbledon', 'US_Open']
 players = ['Agassi', 'Becker', 'Edberg', 'Sampras']
+frm = 1985
+to = 2003
 
 tournament_options = [
     {'label': 'Australian Open', 'value': 'Australian_Open'},
@@ -74,7 +76,7 @@ layout = html.Div([
 
             #headToHead
             html.Div([
-                html.H3("Head to Head Comparison", className="era-h3", style={'textAlign': 'center'}),
+                html.H3("Head to Head", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
                         dcc.Dropdown(
@@ -98,7 +100,6 @@ layout = html.Div([
 
                 html.Div([
                     html.Div(id='player1-image-era2', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
-                     html.P("vs", style={'justify-content': 'center', 'align-items': 'center', 'display': 'flex', 'flex-direction': 'row', 'font-family': '"Monaco", "Courier New", monospace', 'font-weight': 'bold'}),
                     html.Div(id='player2-image-era2', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
                 ], style={'display': 'flex', 'flex-direction': 'horizontal', 'justify-content': 'center'}),
 
@@ -126,35 +127,42 @@ layout = html.Div([
                 html.Div(id='bar-container-era2')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%','height': '400px', 'display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
 
 
-        # grandSlams
-        html.Div([  
-            html.Div([
+        html.Div([
+
+            # grandSlams
+            html.Div([  
                 html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
-                html.Div(id='selectors', className = "dropdown" ,children=[
-                    dcc.Dropdown(
-                        id='tournament-dropdown-era2',
-                        options=tournament_options,
-                        value=tournaments,
-                        multi=True,
-                        clearable=False,
-                    ),
-                    dcc.Dropdown(
-                        id='player-dropdown-grandSlams-era2',
-                        options=player_options,
-                        value=players,
-                        multi=True,
-                        clearable=False,
-                    )
-                ], style = {'width':'70%'}),
-            ], style={'width': '40%'}),
+                html.Div([
+                    html.Div(id='selectors', className = "dropdown" ,children=[
+                        dcc.Dropdown(
+                            id='tournament-dropdown-era2',
+                            options=tournament_options,
+                            value=tournaments,
+                            multi=True,
+                            clearable=False,
+                        ),
+                        dcc.Dropdown(
+                            id='player-dropdown-grandSlams-era2',
+                            options=player_options,
+                            value=players,
+                            multi=True,
+                            clearable=False,
+                        )
+                    ]),
+                ], style={'width': '40%'}),
 
-            html.Div(id='line-chart-era2', style={'width': '50%', 'height': '50%'})
-        
+                html.Div(id='line-chart-era2')
+            ], style = {'width': '50%'}),
 
-        ])
+            # Grand Slam Winners Yearwise.. 
+            html.Div([
+                html.H3("Grand Slam Winners", className="era-h3", style={'textAlign': 'center'}),
+            ], style = {'width': '50%'}),
+
+        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
 
     ], )
 ])
@@ -311,7 +319,6 @@ def update_serve_bar(selected_stat):
             ),  
         plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
-        height=400,
     )
 
     return html.Div(dcc.Graph(figure=fig))

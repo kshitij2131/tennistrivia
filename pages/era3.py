@@ -10,6 +10,8 @@ dash.register_page(__name__, path='/era3', name="ERA 3")
 surfaces = ['Grass', 'Clay', 'Hard']
 tournaments = ['Australian_Open', 'French_Open', 'Wimbledon', 'US_Open']
 players = ['Djokovic', 'Federer', 'Murray', 'Nadal']
+frm = 2003
+to = 2023
 
 tournament_options = [
     {'label': 'Australian Open', 'value': 'Australian_Open'},
@@ -52,6 +54,11 @@ def read_serve_stats():
     serve_stats = pd.read_csv(filename)
     return serve_stats
 
+def read_rankings():
+    filename = f"data/era3/rankings/rankings.csv"
+    ranking_stats = pd.read_csv(filename)
+    return ranking_stats
+
 #frontend..
 
 layout = html.Div([
@@ -78,7 +85,7 @@ layout = html.Div([
 
             #headToHead
             html.Div([
-                html.H3("Head to Head Comparison", className="era-h3", style={'textAlign': 'center'}),
+                html.H3("Head to Head", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
                         dcc.Dropdown(
@@ -102,7 +109,6 @@ layout = html.Div([
 
                 html.Div([
                     html.Div(id='player1-image-era3', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
-                     html.P("vs", style={'justify-content': 'center', 'align-items': 'center', 'display': 'flex', 'flex-direction': 'row', 'font-family': '"Monaco", "Courier New", monospace', 'font-weight': 'bold'}),
                     html.Div(id='player2-image-era3', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
                 ], style={'display': 'flex', 'flex-direction': 'horizontal', 'justify-content': 'center'}),
 
@@ -130,35 +136,56 @@ layout = html.Div([
                 html.Div(id='bar-container-era3')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%', 'height': '400px','display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
 
 
-        # grandSlams
-        html.Div([  
-            html.Div([
-                html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
-                html.Div(id='selectors', className = "dropdown" ,children=[
-                    dcc.Dropdown(
-                        id='tournament-dropdown-era3',
-                        options=tournament_options,
-                        value=tournaments,
-                        multi=True,
-                        clearable=False,
-                    ),
-                    dcc.Dropdown(
-                        id='player-dropdown-grandSlams-era3',
-                        options=player_options,
-                        value=players,
-                        multi=True,
-                        clearable=False,
-                    )
-                ], style = {'width':'70%'}),
-            ], style={'width': '40%'}),
-
-            html.Div(id='line-chart-era3', style={'width': '50%', 'height': '50%'})
         
+        html.Div([
 
-        ])
+            # grandSlams
+            html.Div([  
+                html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
+                html.Div([
+                    html.Div(id='selectors', className = "dropdown" ,children=[
+                        dcc.Dropdown(
+                            id='tournament-dropdown-era3',
+                            options=tournament_options,
+                            value=tournaments,
+                            multi=True,
+                            clearable=False,
+                        ),
+                        dcc.Dropdown(
+                            id='player-dropdown-grandSlams-era3',
+                            options=player_options,
+                            value=players,
+                            multi=True,
+                            clearable=False,
+                        )
+                    ]),
+                ], style={'width': '40%'}),
+
+                html.Div(id='line-chart-era3')
+            ], style = {'width': '50%'}),
+
+            # Player Rankings
+            html.Div([
+                html.H3("Player Rankings Over the Years", className="era-h3", style={'textAlign': 'center'}),
+                html.Div(id = 'year-selector' , children=[
+                    dcc.RangeSlider(
+                        id='year-slider-era3',
+                        min=frm,
+                        max=to,
+                        step=1,
+                        value=[frm, to],
+                        marks={year: str(year) for year in range(frm, to+1)}
+                    )
+                ], style = {'width':'100%'}),
+                
+                html.Div(id='rankings-graph-container')
+            ], style = {'width': '50%'}),
+
+        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
+        
 
     
     ], )
@@ -175,26 +202,29 @@ layout = html.Div([
     Output('player1-image-era3', 'children'),
     Output('player2-image-era3', 'children'),
     Output('bar-container-era3', 'children'),
+    Output('rankings-graph-container', 'children'),
     [Input('player-dropdown-surfaceRecords-era3', 'value'),
      Input('player-dropdown-grandSlams-era3', 'value'),
      Input('tournament-dropdown-era3', 'value'),
      Input('player1-dropdown-era3', 'value'),
      Input('player2-dropdown-era3', 'value'),
-     Input('stat-dropdown-era3', 'value')]
+     Input('stat-dropdown-era3', 'value'),
+     Input('year-slider-era3', 'value')]
 )
 
 
 
 #Backend..
 
-def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2, stat_dropdown):
+def update(selected_player_sr, selected_players_gs, selected_tournaments, player1, player2, stat_dropdown, selected_years):
     surface_stats = update_surface_stats(selected_player_sr)
     line_chart = update_line_chart(selected_players_gs, selected_tournaments)
     h2h_table = update_head_to_head_table(player1, player2)
     player1_img, player2_img = update_player_images(player1, player2)
     serve_bar = update_serve_bar(stat_dropdown)
+    ranking_line_chart = update_rankings_graph(selected_years)
 
-    return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar
+    return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar, ranking_line_chart
 
 def update_surface_stats(selected_player):
     player_data = read_surfaceRecords(selected_player)
@@ -311,7 +341,7 @@ def update_serve_bar(selected_stat):
         font=dict(
             size=16,
             family = '"Monaco", "Courier New", monospace'
-            ),  
+        ),  
         plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
         height=400,
@@ -319,3 +349,35 @@ def update_serve_bar(selected_stat):
 
     return html.Div(dcc.Graph(figure=fig))
 
+
+def update_rankings_graph(selected_years):
+    rankings_df = read_rankings()
+    selected_years_data = rankings_df[(rankings_df['Year'] >= selected_years[0]) & (rankings_df['Year'] <= selected_years[1])]
+
+    data = []
+    for player in players:
+        data.append(go.Scatter(
+            x=selected_years_data['Year'],
+            y=selected_years_data[player],
+            mode='lines+markers',
+            name=player
+        ))
+
+    layout = go.Layout(
+        title="Player Rankings Over the Years",
+        font=dict(
+            size=16,
+            family = '"Monaco", "Courier New", monospace'
+        ),  
+        xaxis=dict(title='Year'),
+        yaxis=dict(title='Ranking Position', autorange='reversed', zeroline = False),
+        hovermode='closest',
+        legend=dict(orientation='h')
+    )
+
+    graph = dcc.Graph(
+        id='rankings-graph',
+        figure={'data': data, 'layout': layout}
+    )
+
+    return html.Div(graph)
