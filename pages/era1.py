@@ -10,6 +10,8 @@ dash.register_page(__name__, path='/', name="ERA 1")
 surfaces = ['Grass', 'Clay', 'Hard']
 tournaments = ['Australian_Open', 'French_Open', 'Wimbledon', 'US_Open']
 players = ['Borg', 'Connors', 'Lendl', 'McEnroe']
+frm = 1974
+to = 1990
 
 tournament_options = [
     {'label': 'Australian Open', 'value': 'Australian_Open'},
@@ -51,6 +53,11 @@ def read_serve_stats():
     filename = f"data/era1/serve/serveStats.csv"
     serve_stats = pd.read_csv(filename)
     return serve_stats
+
+def read_titles():
+    filename = f"data/era1/titles/titles.csv"
+    title_stats = pd.read_csv(filename)
+    return title_stats
 
 #frontend..
 
@@ -130,36 +137,43 @@ layout = html.Div([
                 html.Div(id='bar-container-era1')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%', 'height': '400px','display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%','display': 'flex', 'flex-direction': 'row'}),
 
 
-        # grandSlams
-        html.Div([  
-            
-            html.Div([
+        html.Div([
+
+            # grandSlams
+            html.Div([  
                 html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
-                html.Div(id='selectors', className = "dropdown" ,children=[
-                    dcc.Dropdown(
-                        id='tournament-dropdown-era1',
-                        options=tournament_options,
-                        value=tournaments,
-                        multi=True,
-                        clearable=False,
-                    ),
-                    dcc.Dropdown(
-                        id='player-dropdown-grandSlams-era1',
-                        options=player_options,
-                        value=players,
-                        multi=True,
-                        clearable=False,
-                    )
-                ], style = {'width':'70%'}),
-            ], style={'width': '40%'}),
+                html.Div([
+                    html.Div(id='selectors', className = "dropdown" ,children=[
+                        dcc.Dropdown(
+                            id='tournament-dropdown-era1',
+                            options=tournament_options,
+                            value=tournaments,
+                            multi=True,
+                            clearable=False,
+                        ),
+                        dcc.Dropdown(
+                            id='player-dropdown-grandSlams-era1',
+                            options=player_options,
+                            value=players,
+                            multi=True,
+                            clearable=False,
+                        )
+                    ]),
+                ], style={'width': '40%'}),
 
-            html.Div(id='line-chart-era1', style={'width': '50%', 'height': '50%'})
-        
+                html.Div(id='line-chart-era1')
+            ], style = {'width': '50%'}),
 
-        ])
+            # Number of Titles
+            html.Div([
+                html.H3("Titles Won", className="era-h3", style={'textAlign': 'center'}),
+                html.Div(id='titles-graph-container')
+            ], style = {'width': '50%'}),
+
+        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
 
         
 
@@ -179,6 +193,7 @@ layout = html.Div([
     Output('player1-image-era1', 'children'),
     Output('player2-image-era1', 'children'),
     Output('bar-container-era1', 'children'),
+    Output('titles-graph-container', 'children'),
     [Input('player-dropdown-surfaceRecords-era1', 'value'),
      Input('player-dropdown-grandSlams-era1', 'value'),
      Input('tournament-dropdown-era1', 'value'),
@@ -196,8 +211,9 @@ def update(selected_player_sr, selected_players_gs, selected_tournaments, player
     h2h_table = update_head_to_head_table(player1, player2)
     player1_img, player2_img = update_player_images(player1, player2)
     serve_bar = update_serve_bar(stat_dropdown)
+    titles_graph = update_num_titles()
 
-    return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar
+    return surface_stats, line_chart, h2h_table, player1_img, player2_img, serve_bar, titles_graph
 
 def update_surface_stats(selected_player):
     player_data = read_surfaceRecords(selected_player)
@@ -322,10 +338,40 @@ def update_serve_bar(selected_stat):
         font=dict(
             size=16,
             family = '"Monaco", "Courier New", monospace'
-            ),  
+        ),  
         plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
         height = 400,
     )
 
     return html.Div(dcc.Graph(figure=fig))
+
+def update_num_titles():
+    
+    titles_df = read_titles()
+
+    data = [go.Bar(
+        x=titles_df['Player'],
+        y=titles_df['Number of Titles'],
+        marker=dict(color='#eb3434')
+    )]
+
+    layout = go.Layout(
+        title='Number of Titles by Player',
+        font=dict(
+            size=16,
+            family = '"Monaco", "Courier New", monospace'
+        ),  
+        xaxis=dict(title='Player'),
+        yaxis=dict(title='Number of Titles'),
+        barmode='group',  
+        plot_bgcolor='#ffffff', 
+        paper_bgcolor='#ffffff', 
+        height = 400,
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    graph = html.Div(dcc.Graph(figure=fig))
+
+    return graph
+
