@@ -92,7 +92,7 @@ def read_gs_wins():
 
 layout = html.Div([
 
-    html.H1("ERA 2", className="era-h1", style={'textAlign': 'center'}),
+    html.H1("ERA 2 (1985-2003)", className="era-h1", style={'textAlign': 'center'}),
 
     html.Div(id='page-content', children=[
         html.Div([
@@ -138,6 +138,7 @@ layout = html.Div([
 
                 html.Div([
                     html.Div(id='player1-image-era2', style={'display': 'inline-block', 'margin-top': '20px', 'padding-right': '10px', 'margin-bottom': '20px'}),
+                     html.P("vs", style={'justify-content': 'center', 'align-items': 'center', 'display': 'flex', 'flex-direction': 'row', 'font-family': '"Monaco", "Courier New", monospace', 'font-weight': 'bold'}),
                     html.Div(id='player2-image-era2', style={'display': 'inline-block', 'margin-top': '20px', 'padding-left': '10px', 'margin-bottom': '20px'})
                 ], style={'display': 'flex', 'flex-direction': 'horizontal', 'justify-content': 'center'}),
 
@@ -165,7 +166,7 @@ layout = html.Div([
                 html.Div(id='bar-container-era2')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%', 'height':'400px','display': 'flex', 'flex-direction': 'row'}),
 
 
         html.Div([
@@ -197,7 +198,7 @@ layout = html.Div([
 
             # Grand Slam Winners Yearwise.. 
             html.Div([
-                html.H3("Grand Slam Winners", className="era-h3", style={'textAlign': 'center'}),
+                html.H3("Grand Slam Winners", className="era-h3", style={'textAlign': 'center', 'margin-top': '200px'}),
                 html.Div(id='slam-winners-info'),
                 html.Div(id='gs-year-selector', children=[
                     dcc.Slider(
@@ -206,12 +207,13 @@ layout = html.Div([
                         max=to,
                         value=frm,
                         marks={year: str(year) for year in range(frm, to+1)},
-                        step=None
+                        step=None,
+                        
                     )
                 ], style={'width': '100%'})
             ], style={'width': '50%'})
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
+        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row', 'height':'400px'})
 
     ], )
 ])
@@ -342,8 +344,8 @@ def update_head_to_head_table(player1, player2):
 
 def update_player_images(player1, player2):
     if player1 and player2:
-        player1_image = html.Img(src=read_image(f"data/era2/pictures/{player1}.png"), style={'width': '100px', 'height': '100px'})
-        player2_image = html.Img(src=read_image(f"data/era2/pictures/{player2}.png"), style={'width': '100px', 'height': '100px'})
+        player1_image = html.Img(src=read_image(f"data/era2/pictures/{player1}.png"), style={'width': '150px', 'height': '150px'})
+        player2_image = html.Img(src=read_image(f"data/era2/pictures/{player2}.png"), style={'width': '150px', 'height': '150px'})
         return player1_image, player2_image
     else:
         return None, None
@@ -384,11 +386,14 @@ def update_winners_info(selected_year):
         for winner, grand_slam in zip(tournament, grand_slams):
             if winner and not pd.isna(winner):
                 winner_name = player_full_names.get(winner, winner)
-                winner_image = html.Img(src=read_image(f"data/era2/pictures/{winner}.png"), style={'width': '200px', 'height': '200px'})
-                winners_info.append(html.Div([html.H3(f"{grand_slam} Champion", 
-                                    style = {'font-family': '"Monaco", "Courier New", monospace'}), winner_image, winner_name]))
+                winner_image = html.Img(src=read_image(f"data/era2/pictures/{winner}.png"), style={'width': '150px', 'height': '150px'})
+                winners_info.append(html.Div([
+                                            html.H3(f"{grand_slam}", style = {'font-family': '"Monaco", "Courier New", monospace', 'text-align':'center'}), 
+                                            winner_image, 
+                                            html.H3(f"{winner_name}", style = {'font-family': '"Monaco", "Courier New", monospace'})
+                                            ], style= {'width':'25%', 'display':'flex', 'flex-direction':'column','justify-content': 'center', 'align-items': 'center'}))
             else:
                 winners_info.append(html.Div([html.H3(f"{grand_slam} Grand Slam did not happen😞")],
                                             style = {'font-family': '"Monaco", "Courier New", monospace'}))
 
-    return html.Div(winners_info, style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'})
+    return html.Div(winners_info, style={'width': '100%', 'display': 'flex', 'flex-direction': 'row','margin-top':'200px', 'margin-top':'0'})
