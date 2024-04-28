@@ -129,13 +129,14 @@ layout = html.Div([
                 html.Div(id='bar-container-era1')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%', 'height': '400px','display': 'flex', 'flex-direction': 'row'}),
 
 
         # grandSlams
         html.Div([  
             html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
             html.Div([
+                html.H3("Grandslam Timeline", className="visualisation-title"),
                 html.Div(id='selectors', className = "dropdown" ,children=[
                     dcc.Dropdown(
                         id='tournament-dropdown-era1',
@@ -151,7 +152,7 @@ layout = html.Div([
                         multi=True,
                         clearable=False,
                     )
-                ]),
+                ], style = {'width':'70%'}),
             ], style={'width': '40%'}),
 
             html.Div(id='line-chart-era1', style={'width': '50%', 'height': '50%'})
@@ -323,6 +324,7 @@ def update_serve_bar(selected_stat):
             ),  
         plot_bgcolor='#ffffff', 
         paper_bgcolor='#ffffff', 
+        height = 400,
     )
 
     return html.Div(dcc.Graph(figure=fig))

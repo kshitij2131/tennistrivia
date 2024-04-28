@@ -59,8 +59,13 @@ layout = html.Div([
 
             #surfaceRecords
             html.Div([
+<<<<<<< HEAD
                 html.H3("Surface Records", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selector', className = "dropdown", children=[
+=======
+                html.H3("Surface Records", className="visualisation-title"),
+                html.Div(id='player-selector', className = "dropdown",children=[
+>>>>>>> 2426bd42623a736d0469bf53a42fe474c9990fb6
                     dcc.Dropdown(
                         id='player-dropdown-surfaceRecords-era2',
                         options=player_options,
@@ -74,9 +79,15 @@ layout = html.Div([
 
             #headToHead
             html.Div([
+<<<<<<< HEAD
                 html.H3("Head to Head", className="era-h3", style={'textAlign': 'center'}),
                 html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
+=======
+                html.H3("Head To Head Comparison", className="visualisation-title"),
+                html.Div(id='player-selectors', children=[
+                    html.Div(id='player1-selector', className = "dropdown", children=[
+>>>>>>> 2426bd42623a736d0469bf53a42fe474c9990fb6
                         dcc.Dropdown(
                             id='player1-dropdown-era2',
                             options=player_options,
@@ -130,7 +141,11 @@ layout = html.Div([
 
         # grandSlams
         html.Div([  
+<<<<<<< HEAD
             html.H3("Grand Slams Timeline", className="era-h3", style={'textAlign': 'center'}),
+=======
+            html.H3("Grandslam Timeline", className="visualisation-title"),
+>>>>>>> 2426bd42623a736d0469bf53a42fe474c9990fb6
             html.Div([
                 html.Div(id='selectors', className = "dropdown" ,children=[
                     dcc.Dropdown(
