@@ -59,6 +59,7 @@ layout = html.Div([
 
             #surfaceRecords
             html.Div([
+                html.H3("Surface Records", className="visualisation-title"),
                 html.Div(id='player-selector', className = "dropdown",children=[
                     dcc.Dropdown(
                         id='player-dropdown-surfaceRecords-era2',
@@ -72,6 +73,7 @@ layout = html.Div([
 
             #headToHead
             html.Div([
+                html.H3("Head To Head Comparison", className="visualisation-title"),
                 html.Div(id='player-selectors', children=[
                     html.Div(id='player1-selector', className = "dropdown", children=[
                         dcc.Dropdown(
@@ -106,6 +108,7 @@ layout = html.Div([
 
         # grandSlams
         html.Div([  
+            html.H3("Grandslam Timeline", className="visualisation-title"),
             html.Div([
                 html.Div(id='selectors', className = "dropdown", children=[
                     dcc.Dropdown(

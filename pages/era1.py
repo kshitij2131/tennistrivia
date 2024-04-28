@@ -63,6 +63,7 @@ layout = html.Div([
 
             #surfaceRecords
             html.Div([
+                html.H3("Surface Records", className="visualisation-title"),
                 html.Div(id='player-selector', className = "dropdown", children=[
                     dcc.Dropdown(
                         id='player-dropdown-surfaceRecords-era1',
@@ -70,13 +71,14 @@ layout = html.Div([
                         value='Borg',
                         clearable=False,
                     )
-                ], style={'width': '20%'}),
+                ], style={'width': '40%'}),
 
                 html.Div(id='surface-stats-era1', style={'display': 'flex', 'flexDirection': 'row'})
             ], style={'width': '33%'}),
 
             #headToHead
             html.Div([
+                html.H3("Head To Head Comparison", className="visualisation-title"),
                 html.Div(id='player-selectors',className = "dropdown", children=[
                     html.Div(id='player1-selector', children=[
                         dcc.Dropdown(
@@ -109,6 +111,7 @@ layout = html.Div([
 
             #serveStats
             html.Div([
+                html.H3("Serve Stats", className="visualisation-title"),
                 html.Div(id = 'stat-selector', className='dropdown', children = [
                     dcc.Dropdown(
                     id='stat-dropdown',
@@ -126,12 +129,13 @@ layout = html.Div([
                 html.Div(id='bar-container')
             ], style = {'width':'33%'}),
 
-        ], style={'width': '100%', 'display': 'flex', 'flex-direction': 'row'}),
+        ], style={'width': '100%', 'height': '400px','display': 'flex', 'flex-direction': 'row'}),
 
 
         # grandSlams
         html.Div([  
             html.Div([
+                html.H3("Grandslam Timeline", className="visualisation-title"),
                 html.Div(id='selectors', className = "dropdown" ,children=[
                     dcc.Dropdown(
                         id='tournament-dropdown-era1',
@@ -147,7 +151,7 @@ layout = html.Div([
                         multi=True,
                         clearable=False,
                     )
-                ]),
+                ], style = {'width':'70%'}),
             ], style={'width': '40%'}),
 
             html.Div(id='line-chart-era1', style={'width': '50%', 'height': '50%'})
@@ -314,6 +318,7 @@ def update_table(selected_stat):
             ),  # Set font size
         plot_bgcolor='#ffffff',  # Set transparent background
         paper_bgcolor='#ffffff', 
+        height = 400,
     )
 
     return html.Div(dcc.Graph(figure=fig))
